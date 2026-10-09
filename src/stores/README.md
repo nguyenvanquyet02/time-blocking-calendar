@@ -1,1 +1,0 @@
-Thư mục này chứa global state management cho ứng dụng.

@@ -1,8 +1,11 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
-import HomePage from '../pages/HomePage';
-import CalendarPage from '../pages/CalendarPage';
+import { lazy } from 'react';
 
+const HomePage = lazy(() => import('../pages/HomePage')
+)
+const CalendarPage = lazy(() => import('../pages/CalendarPage')
+)
 const router = createBrowserRouter([
   {
     path: '/',

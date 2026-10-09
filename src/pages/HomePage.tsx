@@ -1,11 +1,28 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { CounterDisplay } from '../components/couter/CounterDisplay';
+
+function Child() {
+  console.log("Child render");
+
+  return <div>Child</div>;
+}
+
 
 const HomePage: React.FC = () => {
   const navigate = useNavigate();
+  const [count, setCount] = useState(0);
 
+  console.log("App render");
   return (
     <div className="flex-1 overflow-y-auto bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/20">
+      <button onClick={() => setCount((prev) => prev + 1)}>
+        Count: {count}
+      </button>
+
+      <Child />
+      <CounterDisplay />
+
       <section className="max-w-4xl mx-auto px-6 pt-20 pb-16 text-center">
         <h1 className="text-5xl font-bold text-gray-900 leading-tight tracking-tight mb-5">
           Nguyễn Văn Quyết - 0979103083

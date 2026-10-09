@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 
 const MainLayout: React.FC = () => {
@@ -27,10 +27,9 @@ const MainLayout: React.FC = () => {
           <NavLink
             to="/home"
             className={({ isActive }) =>
-              `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+              `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
               }`
             }
           >
@@ -45,10 +44,9 @@ const MainLayout: React.FC = () => {
           <NavLink
             to="/calendar"
             className={({ isActive }) =>
-              `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-                isActive
-                  ? 'bg-blue-50 text-blue-600'
-                  : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
+              `px-4 py-2 rounded-lg text-sm font-medium transition-colors ${isActive
+                ? 'bg-blue-50 text-blue-600'
+                : 'text-gray-600 hover:bg-gray-100 hover:text-gray-800'
               }`
             }
           >
@@ -75,10 +73,17 @@ const MainLayout: React.FC = () => {
 
       {/* Page Content */}
       <main className="flex flex-col flex-1 overflow-hidden">
-        <Outlet />
+        <Suspense fallback={<PageLoader />}>
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   );
 };
+const PageLoader = () => (
+  <div className="flex-1 flex items-center justify-center">
+    <div className="w-8 h-8 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+  </div>
+);
 
 export default MainLayout;
