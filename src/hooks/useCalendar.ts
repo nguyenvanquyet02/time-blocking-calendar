@@ -16,6 +16,7 @@ import {
   dateToMinutes,
   get7Days,
 } from '../utils/dateUtils';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 export {
   HOUR_HEIGHT,
@@ -28,35 +29,78 @@ export {
   generateId,
 } from '../utils/dateUtils';
 
+const EVENT_QUERY_KEY = ['events']
 export function useCalendar() {
+  const [dialog, setDialog] = useState<DialogState | null>(null);
+  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
+
+  const queryClient = useQueryClient();
+  const { data: events = [], isLoading, error: queryError } = useQuery({
+    queryKey: EVENT_QUERY_KEY,
+    queryFn: eventService.getEvents
+
+  })
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const days = get7Days(today);
 
-  const [events, setEvents] = useState<CalendarEvent[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [firestoreError, setFirestoreError] = useState<string | null>(null);
+  const firestoreError = queryError ? queryError.message : null;
 
-  useEffect(() => {
-    const unsubscribe = eventService.subscribeToEvents(
-      (fetchedEvents) => {
-        setEvents(fetchedEvents);
-        setIsLoading(false);
-        setFirestoreError(null);
-      },
-      (error) => {
-        console.error('Firestore error:', error);
-        setFirestoreError(error.message);
-        setIsLoading(false);
+  const createMutation = useMutation({
+    mutationFn: eventService.createEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EVENT_QUERY_KEY })
+      setDialog(null)
+    },
+    onError: (err) => {
+      console.log(err)
+    }
+  })
+  const updateMutation = useMutation({
+    mutationFn: eventService.updateEvent,
+    onMutate: async (updatedEvent: CalendarEvent) => {
+      // cancel các query đang chạy ngầm để tránh xung đột
+      await queryClient.cancelQueries({ queryKey: EVENT_QUERY_KEY })
+      // tạo snapshot data sử dụng cho rollback
+      const previousEvents = queryClient.getQueryData<CalendarEvent[]>(EVENT_QUERY_KEY) || []
+      // cập nhật data mới vào cache
+      queryClient.setQueryData<CalendarEvent[]>(EVENT_QUERY_KEY, (oldEvents = []): any => {
+        return oldEvents.map((evt: CalendarEvent) => {
+          return evt.id === updatedEvent.id ? { ...evt, ...updatedEvent } : evt
+        })
+      })
+      // trả snapshot cũ nếu API lỗi
+      return { previousEvents }
+    },
+    onError: (err, updatedEvent, context) => {
+      // updatedEvent data truyền vào mutationFn
+      // context: data trả ra của onMutate
+      console.log(err)
+      // rollback snapshot cũ nếu api lỗi
+      if (context?.previousEvents) {
+        queryClient.setQueryData(EVENT_QUERY_KEY, context.previousEvents)
       }
-    );
-    return () => unsubscribe();
-  }, []);
+    },
+    // chạy dù thành công hay thất bại
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: EVENT_QUERY_KEY })
+      setDialog(null)
+    }
+  })
+  const deleteMutation = useMutation({
+    mutationFn: eventService.deleteEvent,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: EVENT_QUERY_KEY })
+      setDialog(null)
+      setContextMenu(null)
+    },
+    onError: (err) => {
+      console.log(err)
 
+    }
+  })
   const [dragCreate, setDragCreate] = useState<DragCreateState | null>(null);
   const [dragMove, setDragMove] = useState<DragMoveState | null>(null);
-  const [contextMenu, setContextMenu] = useState<ContextMenuState | null>(null);
-  const [dialog, setDialog] = useState<DialogState | null>(null);
   const [detailEvent, setDetailEvent] = useState<CalendarEvent | null>(null);
 
   const dragMovePreview = useRef<{ dayIndex: number; startMinute: number } | null>(null);
@@ -140,7 +184,7 @@ export function useCalendar() {
         const newStart = minutesToDate(newDay, preview.startMinute);
         const newEnd = minutesToDate(newDay, preview.startMinute + duration);
         const updated: CalendarEvent = { ...event, startDateTime: newStart, endDateTime: newEnd };
-        eventService.updateEvent(updated).catch(console.error);
+        updateMutation.mutate(updated)
       }
       dragMovePreview.current = null;
       setDragMoveVisible(null);
@@ -149,32 +193,17 @@ export function useCalendar() {
   }, [days, events]);
 
 
-  const createEvent = useCallback(async (data: Omit<CalendarEvent, 'id'>) => {
-    try {
-      await eventService.createEvent(data);
-      setDialog(null);
-    } catch (err) {
-      console.error('Failed to create event:', err);
-    }
-  }, []);
+  const createEvent = useCallback((data: Omit<CalendarEvent, 'id'>) => {
+    createMutation.mutate(data)
+  }, [createMutation]);
 
-  const updateEvent = useCallback(async (updated: CalendarEvent) => {
-    try {
-      await eventService.updateEvent(updated);
-      setDialog(null);
-    } catch (err) {
-      console.error('Failed to update event:', err);
-    }
-  }, []);
+  const updateEvent = useCallback((updated: CalendarEvent) => {
+    updateMutation.mutate(updated)
+  }, [updateMutation]);
 
-  const deleteEvent = useCallback(async (id: string) => {
-    try {
-      await eventService.deleteEvent(id);
-      setContextMenu(null);
-    } catch (err) {
-      console.error('Failed to delete event:', err);
-    }
-  }, []);
+  const deleteEvent = useCallback((id: string) => {
+    deleteMutation.mutate(id)
+  }, [deleteMutation]);
 
 
   const openContextMenu = useCallback((eventId: string, x: number, y: number) => {

@@ -9,6 +9,7 @@ import {
   query,
   orderBy,
   type Unsubscribe,
+  getDocs,
 } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import type { CalendarEvent } from '../types/calendar';
@@ -40,6 +41,12 @@ function fromFirestore(id: string, data: FirestoreEvent): CalendarEvent {
     startDateTime: data.startDateTime.toDate(),
     endDateTime: data.endDateTime.toDate(),
   };
+}
+
+export async function getEvents(): Promise<CalendarEvent[]> {
+  const q = query(collection(db, COLLECTION), orderBy('startDateTime', 'asc'))
+  const snapshot = await getDocs(q)
+  return snapshot.docs.map((doc) => fromFirestore(doc.id, doc.data() as FirestoreEvent))
 }
 
 export function subscribeToEvents(
