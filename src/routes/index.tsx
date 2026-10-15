@@ -1,6 +1,7 @@
 import { createBrowserRouter, Navigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 import { lazy } from 'react';
+import UserPage from '../pages/UserPage';
 
 const HomePage = lazy(() => import('../pages/HomePage')
 )
@@ -22,6 +23,10 @@ const router = createBrowserRouter([
       {
         path: 'calendar',
         element: <CalendarPage />,
+      },
+      {
+        path: 'users',
+        element: <UserPage />,
       },
     ],
   },

@@ -24,13 +24,11 @@ const userSlice = createSlice({
     reducers: {
         // cac actions
         fetchUsersRequest: (state) => {
-            console.log('fetchUsersRequest')
 
             state.loading = true,
                 state.error = null
         },
         fetchUsersSuccess: (state, action: PayloadAction<User[]>) => {
-            console.log('fetchUsersSuccess')
 
             state.loading = false,
                 state.data = action.payload
@@ -38,7 +36,6 @@ const userSlice = createSlice({
         fetchUsersFailure: (
             state, action: PayloadAction<string>
         ) => {
-            console.log('fetchUsersFailure')
 
             state.loading = false,
                 state.error = action.payload

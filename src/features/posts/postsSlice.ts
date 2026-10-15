@@ -25,7 +25,6 @@ const initialState: PostsState = {
 export const fetchPosts = createAsyncThunk(
     "posts/fetchPosts",
     async () => {
-        console.log('fetch')
         const res = await fetch("https://jsonplaceholder.typicode.com/posts")
         if (!res.ok) {
             throw new Error("Failed to fetch posts!");
@@ -41,17 +40,14 @@ const postsSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder.addCase(fetchPosts.pending, (state) => {
-            console.log('pending')
             state.loading = true;
             state.error = null;
         })
             .addCase(fetchPosts.fulfilled, (state, action) => {
-                console.log('fulfilled')
                 state.loading = false;
                 state.data = action.payload
             })
             .addCase(fetchPosts.rejected, (state, action) => {
-                console.log('rejected')
                 state.loading = false;
                 state.error = action?.error.message || "Error!"
             })

@@ -11,7 +11,6 @@ import { fetchUsersRequest } from "../../features/users/userSlice";
 export function CounterActions() {
     const dispatch = useDispatch();
     useEffect(() => {
-        console.log('dispatch')
         dispatch(fetchUsersRequest());
     }, [])
     return (
