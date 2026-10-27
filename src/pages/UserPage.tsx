@@ -7,7 +7,9 @@ import * as usersService from '../services/userService'
 export default function UserPage() {
     const [page, setPage] = useState(1);
     const LIMIT = 3;
-    const { users, isLoading, isError, isPlaceholderData } = useUsers(page, LIMIT)
+    const { users, isLoading, isFetching, isError, isPlaceholderData } = useUsers(page, LIMIT)
+    console.log('👑UserPage.tsx:10/(isFetching):', isFetching)
+    console.log('🚀UserPage.tsx:10/(isLoading):', isLoading)
     const queryClient = useQueryClient()
 
     const prefetchNextPage = () => {
