@@ -1,17 +1,26 @@
-import { createBrowserRouter, Navigate } from 'react-router-dom';
-import MainLayout from '../layouts/MainLayout';
-import { lazy } from 'react';
-import UserPage from '../pages/UserPage';
-import PostPage from '../pages/PostPage';
-import ProductsPage from '../pages/ProductsPage';
+import { createBrowserRouter, Navigate } from "react-router-dom";
+import MainLayout from "../layouts/MainLayout";
+import { lazy } from "react";
+import { ProtectedRoute } from "./ProtectedRoute";
 
-const HomePage = lazy(() => import('../pages/HomePage')
-)
-const CalendarPage = lazy(() => import('../pages/CalendarPage')
-)
+const HomePage = lazy(() => import("../pages/HomePage"));
+const CalendarPage = lazy(() => import("../pages/CalendarPage"));
+const UserPage = lazy(() => import("../pages/UserPage"));
+const PostPage = lazy(() => import("../pages/PostPage"));
+const ProductsPage = lazy(() => import("../pages/ProductsPage"));
+const LoginPage = lazy(() => import("../pages/LoginPage"));
+const RegisterPage = lazy(() => import("../pages/RegisterPage"));
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/login",
+    element: <LoginPage />,
+  },
+  {
+    path: "/register",
+    element: <RegisterPage />,
+  },
+  {
+    path: "/",
     element: <MainLayout />,
     children: [
       {
@@ -19,24 +28,41 @@ const router = createBrowserRouter([
         element: <Navigate to="/calendar" replace />,
       },
       {
-        path: 'home',
+        path: "home",
         element: <HomePage />,
       },
       {
-        path: 'calendar',
-        element: <CalendarPage />,
+        path: "calendar",
+        element: (
+          // chi cho phep da login
+          <ProtectedRoute>
+            <CalendarPage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: 'users',
-        element: <UserPage />,
+        path: "users",
+        element: (
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <UserPage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: 'posts',
-        element: <PostPage />,
+        path: "posts",
+        element: (
+          <ProtectedRoute allowedRoles={["user"]}>
+            <PostPage />
+          </ProtectedRoute>
+        ),
       },
       {
-        path: 'products',
-        element: <ProductsPage />,
+        path: "products",
+        element: (
+          <ProtectedRoute allowedRoles={["manager"]}>
+            <ProductsPage />
+          </ProtectedRoute>
+        ),
       },
     ],
   },
