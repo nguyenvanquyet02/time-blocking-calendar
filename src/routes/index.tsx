@@ -10,6 +10,7 @@ const PostPage = lazy(() => import("../pages/PostPage"));
 const ProductsPage = lazy(() => import("../pages/ProductsPage"));
 const LoginPage = lazy(() => import("../pages/LoginPage"));
 const RegisterPage = lazy(() => import("../pages/RegisterPage"));
+const LearnFormControl = lazy(() => import("../pages/LearnFormControl"));
 const router = createBrowserRouter([
   {
     path: "/login",
@@ -61,6 +62,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute allowedRoles={["manager"]}>
             <ProductsPage />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "learn-form-control",
+        element: (
+          <ProtectedRoute>
+            <LearnFormControl />
           </ProtectedRoute>
         ),
       },

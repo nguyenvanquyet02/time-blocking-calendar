@@ -39,11 +39,22 @@ const LoginPage = () => {
     };
     const handleGoogleLogin = async () => {
         setError(null);
+        setLoading(true);
         try {
             await loginWithGoogle();
             navigate(from, { replace: true });
         } catch (err: any) {
-            setError(err.message || "Đăng nhập Google thất bại.");
+            if (err.code === "auth/operation-not-allowed") {
+                setError(
+                    "Phương thức đăng nhập bằng Google chưa được kích hoạt trong Firebase Console.",
+                );
+            } else if (err.code === "auth/popup-closed-by-user") {
+                setError("Cửa sổ đăng nhập Google đã bị đóng.");
+            } else {
+                setError(err.message || "Đăng nhập Google thất bại.");
+            }
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -125,8 +136,9 @@ const LoginPage = () => {
                 </div>
                 <button
                     onClick={handleGoogleLogin}
+                    disabled={loading}
                     type="button"
-                    className="w-full flex items-center justify-center gap-2.5 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition"
+                    className="w-full flex items-center justify-center gap-2.5 py-2.5 border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
                 >
                     <svg className="w-4 h-4" viewBox="0 0 24 24">
                         <path

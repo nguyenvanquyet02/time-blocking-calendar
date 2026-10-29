@@ -29,7 +29,7 @@ const queryClient = new QueryClient({
 
 })
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  <>
     {/* QueryClientProvider dùng để bọc app, giúp cấp quyền truy cập cache cho toàn bộ app */}
     <QueryClientProvider client={queryClient}>
       <Provider store={store}>
@@ -38,5 +38,5 @@ createRoot(document.getElementById('root')!).render(
       {/* component của react-query-tools để debug khi dev */}
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
-  </StrictMode>,
+  </>,
 )

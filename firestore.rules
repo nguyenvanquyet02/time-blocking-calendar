@@ -2,11 +2,19 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Cho phép đọc/ghi toàn bộ tài liệu trong collection 'events'
-    // Lưu ý: Hiện tại app chưa tích hợp Firebase Auth nên cho phép truy cập công khai.
-    // Nếu sau này thêm Auth, có thể đổi thành: allow read, write: if request.auth != null;
+    // 1. Phân quyền cho collection 'users'
+    match /users/{userId} {
+      // Cho phép đọc nếu người dùng đã đăng nhập
+      allow read: if request.auth != null;
+      // Chỉ cho phép người dùng tự tạo / chỉnh sửa profile của chính mình (UID khớp nhau)
+      allow write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // 2. Phân quyền cho collection 'events'
     match /events/{eventId} {
-      allow read, write: if true;
+      // Cho phép đọc/ghi nếu người dùng đã đăng nhập
+      allow read, write: if request.auth != null;
     }
   }
 }
+
