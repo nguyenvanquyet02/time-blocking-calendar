@@ -27,7 +27,7 @@ const sizeClasses: Record<ButtonSize, string> = {
   lg: 'px-7 py-3.5 text-base rounded-xl',
 };
 
-const Button: React.FC<ButtonProps> = ({
+const ButtonTest: React.FC<ButtonProps> = ({
   variant = 'primary',
   size = 'md',
   leftIcon,
@@ -60,4 +60,4 @@ const Button: React.FC<ButtonProps> = ({
   );
 };
 
-export default Button;
+export default ButtonTest;

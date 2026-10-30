@@ -7,8 +7,8 @@ import EventDialog from '../components/calendar/EventDialog';
 import EventDetailDialog from '../components/calendar/EventDetailDialog';
 import ContextMenu from '../components/calendar/ContextMenu';
 import LoadingSpinner from '../components/ui/LoadingSpinner';
-import Button from '../components/ui/Button';
 import type { CalendarEvent } from '../types/calendar';
+import ButtonTest from '../components/ui/ButtonTest';
 
 const CalendarPage: React.FC = () => {
   const {
@@ -105,7 +105,7 @@ const CalendarPage: React.FC = () => {
         <h1 className="text-sm font-semibold text-gray-500 uppercase tracking-widest">
           Lịch làm việc — 7 ngày tới
         </h1>
-        <Button
+        <ButtonTest
           variant="primary"
           onClick={handleAddClick}
           leftIcon={
@@ -115,7 +115,7 @@ const CalendarPage: React.FC = () => {
           }
         >
           Thêm sự kiện
-        </Button>
+        </ButtonTest>
       </div>
 
       <div

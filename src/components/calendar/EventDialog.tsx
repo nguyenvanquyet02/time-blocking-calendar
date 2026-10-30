@@ -4,7 +4,7 @@ import { generateId, toLocalInputValue, fromLocalInputValue } from '../../utils/
 import Dialog from '../ui/Dialog';
 import Input from '../ui/Input';
 import Textarea from '../ui/Textarea';
-import Button from '../ui/Button';
+import ButtonTest from '../ui/ButtonTest';
 
 interface EventDialogProps {
   dialog: DialogState;
@@ -112,12 +112,12 @@ const EventDialog: React.FC<EventDialogProps> = ({ dialog, onSave, onClose }) =>
         )}
 
         <div className="flex gap-3 pt-2">
-          <Button type="button" variant="secondary" className="flex-1" onClick={onClose}>
+          <ButtonTest type="button" variant="secondary" className="flex-1" onClick={onClose}>
             Hủy
-          </Button>
-          <Button type="submit" variant="primary" className="flex-1">
+          </ButtonTest>
+          <ButtonTest type="submit" variant="primary" className="flex-1">
             {isEdit ? 'Cập nhật' : 'Tạo sự kiện'}
-          </Button>
+          </ButtonTest>
         </div>
       </form>
     </Dialog>

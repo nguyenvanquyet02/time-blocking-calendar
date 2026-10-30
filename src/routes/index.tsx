@@ -2,6 +2,7 @@ import { createBrowserRouter, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 import { lazy } from "react";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { UIShadcn } from "@/pages/UIShadcn";
 
 const HomePage = lazy(() => import("../pages/HomePage"));
 const CalendarPage = lazy(() => import("../pages/CalendarPage"));
@@ -70,6 +71,14 @@ const router = createBrowserRouter([
         element: (
           <ProtectedRoute>
             <LearnFormControl />
+          </ProtectedRoute>
+        ),
+      },
+      {
+        path: "ui-shadcn",
+        element: (
+          <ProtectedRoute>
+            <UIShadcn />
           </ProtectedRoute>
         ),
       },

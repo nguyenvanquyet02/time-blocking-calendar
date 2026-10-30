@@ -1,7 +1,7 @@
 import React from 'react';
 import type { CalendarEvent } from '../../types/calendar';
 import Dialog from '../ui/Dialog';
-import Button from '../ui/Button';
+import ButtonTest from '../ui/ButtonTest';
 
 interface EventDetailDialogProps {
   event: CalendarEvent;
@@ -59,9 +59,9 @@ const EventDetailDialog: React.FC<EventDetailDialogProps> = ({ event, onClose })
         <p className="text-sm text-gray-400 italic text-center py-2 mb-5">Không có mô tả</p>
       )}
 
-      <Button variant="secondary" className="w-full" onClick={onClose}>
+      <ButtonTest variant="secondary" className="w-full" onClick={onClose}>
         Đóng
-      </Button>
+      </ButtonTest>
     </Dialog>
   );
 };

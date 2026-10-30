@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-import Button from '../ui/Button';
+import ButtonTest from '../ui/ButtonTest';
 
 interface ContextMenuProps {
   x: number;
@@ -51,7 +51,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onEdit, onDelete, onClo
       style={{ top: adjustedY, left: adjustedX }}
       role="menu"
     >
-      <Button
+      <ButtonTest
         variant="ghost"
         size="sm"
         leftIcon={<EditIcon />}
@@ -59,9 +59,9 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onEdit, onDelete, onClo
         className="w-full justify-start rounded-none px-4 py-2.5 text-gray-700 hover:bg-blue-50 hover:text-blue-600"
       >
         Edit
-      </Button>
+      </ButtonTest>
       <div className="h-px bg-gray-100 mx-2" />
-      <Button
+      <ButtonTest
         variant="ghost"
         size="sm"
         leftIcon={<DeleteIcon />}
@@ -69,7 +69,7 @@ const ContextMenu: React.FC<ContextMenuProps> = ({ x, y, onEdit, onDelete, onClo
         className="w-full justify-start rounded-none px-4 py-2.5 text-red-600 hover:bg-red-50"
       >
         Delete
-      </Button>
+      </ButtonTest>
     </div>
   );
 };
